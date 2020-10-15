@@ -118,11 +118,15 @@ resource "aws_db_instance" "postgresql" {
     #delete_protection    = true   # TODO... disabled for now
 }
 
-############################## AWS CONFIG DELETE PROTECTION FOR RDS USING AWS CLOUDFORMATION
+############################## AWS CONFIG DELETION PROTECTION POLICY VIA AWS CLOUDFORMATION
 
 resource "aws_cloudformation_stack" "policy_stack" {
     name = "policy_stack"
 
+    parameters = {
+
+    }
+    
     # sourced from https://stelligent.com/2019/10/31/deploy-managed-config-rules-using-cloudformation-and-codepipeline/
     template_body = <<STACK
     {
