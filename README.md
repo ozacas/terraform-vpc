@@ -41,29 +41,35 @@ The RDS instance is assumed to be placed in a private subnet since that is well 
 Pipeline
 ========
 
- 1. evaluate suitable software versions
- 2. terraform init
- 3. generate binary plan (and JSON version)
- 4. apply OPA to check plan for its suitability per problem statement
- 5. terraform apply
- 6. verify that an attempt to create a subnet fails via terraform fails due to step(4) and in
-    AWS Config via CloudFormation setup by step (5) per problem statement
+ 1. evaluate suitable software versions - DONE
+ 2. terraform init - DONE
+ 3. generate binary plan (and JSON version) - DONE
+ 4. per-problem statement:
+       a) apply OPA to check plan for appropriate subnet configuration (exactly 2) - BROKEN
+       b) apply AWS Config rule and AWS Cloudformation template to prevent deletion of protected RDS instances - UNDERWAY
+ 5. terraform apply - DONE
+ 6. verify that an attempt to create a subnet fails via terraform fails due to step (4a) 
+ 7. verify that deletion of a termination protection RDS instance fails (step 4b)
 
-I am thinking that a custom AWS Config rule would need to be created (via CloudFormation and AWS Lambda)
-to evaluate whether the VPC subnet's exceeds two and triggering if so. So we can add AWS Lambda to the list of tech I need to learn....
-
+I am not sure how CloudFormation helps with step 4b - but we will need to figure that out tomorrow....
 
 Additional Resources
 ====================
 
 https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html
 https://github.com/Scalr/sample-tf-opa-policies
+https://docs.aws.amazon.com/config/latest/developerguide/how-does-config-work.html
+
 
 Running
 =======
 
 ~~~~
 # edit config/*.vars to setup AWS access/secret keys and other key state
-make init # run terraform init
-make test # plan followed by opa and if valid apply
+
+# check version requirements and 'terraform init'
+make init 
+
+#  check subnet requirement and terraform apply iff valid
+make test 
 ~~~~
