@@ -33,6 +33,7 @@ Key AWS services used:
  - subnets
  - config
  - cloudformation
+ 
 The last two services i've not used before so must be learnt in order to be deployed. Will need to develop resources to use
 these two services via CLI/SDK/Terraform.
 
