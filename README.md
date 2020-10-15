@@ -11,8 +11,6 @@ Design Considerations
 =====================
 
 Terraform best practices: https://github.com/ozbillwang/terraform-best-practices
-ACCEPT: best practices with no cost eg.:
-ACCEPT: modules to provide directory structure and group related infrastructure by directory
 
 REJECT: terragrunt
 Not beneficial for this size of problem
@@ -21,7 +19,7 @@ REJECT: pretf https://pretf.readthedocs.io/en/latest/tutorial/dynamic-references
 Not beneficial for this size of problem, although may be useful to speed code authorship for larger projects
 
 REJECT: terraform modules https://registry.terraform.io/modules/terraform-aws-modules/rds/aws/latest
-Useful, if I had more time I would probably use this to minimise boilerplate code but not much benefit for this challenge
+Useful, if I had more time I would probably use this to minimise boilerplate code but not enough RoI for this challenge
 
 ACCEPT: make(1) as driver to run terraform/opa in reproducible ways. GNU Make is required so we can assert the runtime environment
 KISS principle
@@ -43,12 +41,12 @@ The RDS instance is assumed to be placed in a private subnet since that is well 
 Pipeline
 ========
 
-1) evaluate suitable software versions
-2) terraform init
-3) generate binary plan (and JSON version)
-4) apply OPA to check plan for its suitabilty per problem statement
-5) terraform apply
-6) verify that an attempt to create a subnet fails via terraform fails due to step(4) and in
+ # evaluate suitable software versions
+ # terraform init
+ # generate binary plan (and JSON version)
+ # apply OPA to check plan for its suitabilty per problem statement
+ # terraform apply
+ # verify that an attempt to create a subnet fails via terraform fails due to step(4) and in
    AWS Config via CloudFormation setup by step (5) per problem statement
 
 Additional Resources
