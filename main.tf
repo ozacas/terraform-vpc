@@ -88,3 +88,26 @@ resource "aws_route_table_association" "subnet2-private" {
     subnet_id = aws_subnet.subnet2-private.id
     route_table_id = aws_route_table.subnet2-private.id
 }
+
+############################# private subnet RDS instance
+
+resource "aws_db_subnet_group" "postgresql" {
+  name       = "main"
+  subnet_ids = [aws_subnet.subnet2-private.id]
+
+  tags = {
+    Name = "Postgres subnet group"
+  }
+}
+
+resource "aws_db_instance" "postgresql" {
+    instance_class = var.db_instance_size
+    region = var.aws_region
+    allocated_storage    = 2
+    storage_type         = "gp2"
+    engine               = "postgres"
+    name                 = "mydb"
+    username             = "admin"
+    password             = "admin"
+    db_subnet_group_name = aws.db_subnet_group.name
+}

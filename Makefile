@@ -19,8 +19,8 @@ json: plan
 # NB: fail plan if more than two subnets provided in VPC
 test: json
 	@echo "Evaluating and applying infrastructure plan..."
-	opa eval --format pretty --data policy/terraform.rego --input $(JSON_PLAN) "data.terraform.analysis.deny"
-#	terraform apply $(TFARGS)
+#	opa eval --format pretty --data policy/terraform.rego --input $(JSON_PLAN) "data.terraform.analysis.deny"
+	terraform apply $(TFARGS)
 
 clean:
 	@rm -f $(PLAN) $(JSON_PLAN)
