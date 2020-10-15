@@ -64,14 +64,23 @@ https://docs.aws.amazon.com/config/latest/developerguide/rds-cluster-deletion-pr
 So the problem wants me to create a AWS config rule via a cloudformation template deployed to AWS using terraform????
 Yes i think that is what is desired.
 
+Ok, so since cloudformation has been used it will manage the rule - remove the stack and you'll remove the rule. So maybe thats the intent - a policy stack which can be readily address change as policies change over time.
+
+So I guess the best way to proceed is to identify some examples of cloudformation templates for aws config rules and add into the terraform codebase.
+One option which i've seen is an AWS youtube video: stop an EC2 instance if it is non-compliant via AWS Systems Manager. Since use of SSM is not mentioned in the problem statement, we assume it is not desired.
+
+Reference documentation is all-over-the-place as per norm with AWS. There are some templates here:
+https://s3.us-west-2.amazonaws.com/cloudformation-templates-us-west-2/
+but doesnt seem to include RDS deletion protection AWS Config as an example. Of course.
+
 
 Additional Resources
 ====================
 
-https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html
-https://github.com/Scalr/sample-tf-opa-policies
-https://docs.aws.amazon.com/config/latest/developerguide/how-does-config-work.html
-
+  * https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html
+  * https://github.com/Scalr/sample-tf-opa-policies
+  * https://docs.aws.amazon.com/config/latest/developerguide/how-does-config-work.html
+  * https://docs.aws.amazon.com/config/latest/developerguide/aws-config-managed-rules-cloudformation-templates.html
 
 Running
 =======

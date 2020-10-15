@@ -115,4 +115,67 @@ resource "aws_db_instance" "postgresql" {
     db_subnet_group_name = aws_db_subnet_group.postgresql.name
     availability_zone    = "ap-southeast-2a"
     multi_az             = false
+    #delete_protection    = true   # TODO... disabled for now
+}
+
+############################## AWS CONFIG DELETE PROTECTION FOR RDS USING AWS CLOUDFORMATION
+
+resource "aws_cloudformation_stack" "policy_stack" {
+    name = "policy_stack"
+
+    # sourced from https://stelligent.com/2019/10/31/deploy-managed-config-rules-using-cloudformation-and-codepipeline/
+    template_body = <<STACK
+    {
+      "Resources": {
+        "AWSConfigRule": {
+          "Type": "AWS::Config::ConfigRule",
+          "Properties": {
+            "ConfigRuleName": {
+              "Ref": "ConfigRuleName"
+            },
+            "Description": "Checks if an Amazon Relational Database Service (Amazon RDS) cluster has deletion protection enabled. This rule is NON_COMPLIANT if an RDS cluster does not have deletion protection enabled.",
+            "InputParameters": {},
+            "Scope": {
+              "ComplianceResourceTypes": [
+                "AWS::RDS::DBCluster"
+              ]
+            },
+            "Source": {
+              "Owner": "AWS",
+              "SourceIdentifier": "RDS_CLUSTER_DELETION_PROTECTION_ENABLED"
+            }
+          }
+        }
+      },
+      "Parameters": {
+        "ConfigRuleName": {
+          "Type": "String",
+          "Default": "rds-cluster-deletion-protection-enabled",
+          "Description": "The name that you assign to the AWS Config rule.",
+          "MinLength": "1",
+          "ConstraintDescription": "This parameter is required."
+        }
+      },
+      "Metadata": {
+        "AWS::CloudFormation::Interface": {
+          "ParameterGroups": [
+            {
+              "Label": {
+                "default": "Required"
+              },
+              "Parameters": []
+            },
+            {
+              "Label": {
+                "default": "Optional"
+              },
+              "Parameters": []
+            }
+          ]
+        }
+      },
+      "Conditions": {}
+    }
+STACK
+
 }
