@@ -15,10 +15,10 @@ plan:
 json: plan
 	terraform show -json plan.binary > $(JSON_PLAN)
 
-.PHONY: test clean
+.PHONY: deployment clean mischief
 # NB: fail plan if more than two subnets provided in VPC
 # opa is currently disabled as the policy code is broken... FIXME!
-test: json
+deployment: json
 	@echo "Evaluating and applying infrastructure plan..."
 #	opa eval --format pretty --data policy/terraform.rego --input $(JSON_PLAN) "data.terraform.analysis.deny"
 	terraform apply -auto-approve $(TFARGS)
@@ -28,3 +28,6 @@ clean:
 
 destroy: clean
 	terraform destroy $(TFARGS)
+
+mischief:
+	cd mischief; terraform apply -auto-approve $(TFARGS) # give bad actor access to same settings as VPC...
