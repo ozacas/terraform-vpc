@@ -44,19 +44,26 @@ Pipeline
  1. evaluate suitable software versions
  2. terraform init
  3. generate binary plan (and JSON version)
- 4. apply OPA to check plan for its suitabilty per problem statement
+ 4. apply OPA to check plan for its suitability per problem statement
  5. terraform apply
  6. verify that an attempt to create a subnet fails via terraform fails due to step(4) and in
     AWS Config via CloudFormation setup by step (5) per problem statement
 
+I am thinking that a custom AWS Config rule would need to be created (via CloudFormation and AWS Lambda)
+to evaluate whether the VPC subnet's exceeds two and triggering if so. So we can add AWS Lambda to the list of tech I need to learn....
+
+
 Additional Resources
 ====================
+
+https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html
+https://github.com/Scalr/sample-tf-opa-policies
 
 Running
 =======
 
 ~~~~
-# edit config/tf.vars to setup AWS access/secret keys and other key variables
+# edit config/*.vars to setup AWS access/secret keys and other key state
 make init # run terraform init
 make test # plan followed by opa and if valid apply
 ~~~~
