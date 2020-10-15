@@ -41,13 +41,13 @@ The RDS instance is assumed to be placed in a private subnet since that is well 
 Pipeline
 ========
 
- # evaluate suitable software versions
- # terraform init
- # generate binary plan (and JSON version)
- # apply OPA to check plan for its suitabilty per problem statement
- # terraform apply
- # verify that an attempt to create a subnet fails via terraform fails due to step(4) and in
-   AWS Config via CloudFormation setup by step (5) per problem statement
+ 1. evaluate suitable software versions
+ 2. terraform init
+ 3. generate binary plan (and JSON version)
+ 4. apply OPA to check plan for its suitabilty per problem statement
+ 5. terraform apply
+ 6. verify that an attempt to create a subnet fails via terraform fails due to step(4) and in
+    AWS Config via CloudFormation setup by step (5) per problem statement
 
 Additional Resources
 ====================
@@ -55,6 +55,8 @@ Additional Resources
 Running
 =======
 
+~~~~
 # edit config/tf.vars to setup AWS access/secret keys and other key variables
 make init # run terraform init
 make test # plan followed by opa and if valid apply
+~~~~
