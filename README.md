@@ -33,7 +33,7 @@ Key AWS services used:
  - subnets
  - config
  - cloudformation
- 
+
 The last two services i've not used before so must be learnt in order to be deployed. Will need to develop resources to use
 these two services via CLI/SDK/Terraform.
 
@@ -73,6 +73,9 @@ One option which i've seen is an AWS youtube video: stop an EC2 instance if it i
 Reference documentation is all-over-the-place as per norm with AWS. There are some templates here:
 https://s3.us-west-2.amazonaws.com/cloudformation-templates-us-west-2/
 but doesnt seem to include RDS deletion protection AWS Config as an example. Of course.
+
+I wish i'd seen this before I started with REGO:
+https://medium.com/@mathurvarun98/how-to-write-great-rego-policies-dc6117679c9f
 
 
 Additional Resources
