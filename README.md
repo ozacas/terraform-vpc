@@ -48,10 +48,21 @@ Pipeline
        a) apply OPA to check plan for appropriate subnet configuration (exactly 2) - BROKEN
        b) apply AWS Config rule and AWS Cloudformation template to prevent deletion of protected RDS instances - UNDERWAY
  5. terraform apply - DONE
- 6. verify that an attempt to create a subnet fails via terraform fails due to step (4a) 
+ 6. verify that an attempt to create a subnet fails via terraform fails due to step (4a)
  7. verify that deletion of a termination protection RDS instance fails (step 4b)
 
-I am not sure how CloudFormation helps with step 4b - but we will need to figure that out tomorrow....
+I am not sure how CloudFormation helps with step 4b - but we will need to figure that out tomorrow.... maybe the intention is that
+you use a stack policy to prevent updates:
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html
+
+So if I understand the problem right, use terraform to specify a stack policy preventing accidental updates to the RDS instance. Ok,
+so how does AWS Config fit in????
+
+Nope, so maybe this is the document:
+https://docs.aws.amazon.com/config/latest/developerguide/rds-cluster-deletion-protection-enabled.html
+
+So the problem wants me to create a AWS config rule via a cloudformation template deployed to AWS using terraform???? Yes i think that is what is desired.
+
 
 Additional Resources
 ====================
@@ -68,8 +79,8 @@ Running
 # edit config/*.vars to setup AWS access/secret keys and other key state
 
 # check version requirements and 'terraform init'
-make init 
+make init
 
 #  check subnet requirement and terraform apply iff valid
-make test 
+make test
 ~~~~
