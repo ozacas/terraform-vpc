@@ -21,53 +21,66 @@ resource "aws_security_group" "postgres" {
   }
 }
 
-########################## public subnet
-resource "aws_subnet" "subnet1-public" {
+########################## private subnet 1
+resource "aws_subnet" "subnet1-private" {
   vpc_id = aws_vpc.main.id
   cidr_block = "10.99.123.0/24"
   availability_zone = "ap-southeast-2a"
+
+  tags = {
+     Name = "Private Subnet 1"
+  }
 }
 
-resource "aws_internet_gateway" "main" {
-  vpc_id = aws_vpc.main.id
+resource "aws_eip" "subnet1-eip-nat" {
+   vpc   = true
 }
 
-resource "aws_route_table" "subnet1-public" {
+resource "aws_nat_gateway" "s1" {
+   allocation_id = aws_eip.subnet1-eip-nat.id
+   subnet_id     = aws_subnet.subnet1-private.id
+}
+
+resource "aws_route_table" "subnet1-private" {
     vpc_id = aws_vpc.main.id
 
     route {
         cidr_block = "0.0.0.0/0"
-        gateway_id = aws_internet_gateway.main.id
+        instance_id = aws_nat_gateway.s1.id
     }
 
     tags = {
-        Name = "Public Subnet"
+        Name = "Private Subnet 1"
     }
 }
 
-resource "aws_route_table_association" "subnet1-public" {
-    subnet_id = aws_subnet.subnet1-public.id
-    route_table_id = aws_route_table.subnet1-public.id
+resource "aws_route_table_association" "subnet1-private" {
+    subnet_id = aws_subnet.subnet1-private.id
+    route_table_id = aws_route_table.subnet1-private.id
 }
 
-############################# private subnet (in B AZ for db_subnet_group to have enough AZ coverage)
+############################# private subnet 2 (in B AZ for db_subnet_group to have enough AZ coverage)
 resource "aws_subnet" "subnet2-private" {
   vpc_id = aws_vpc.main.id
   cidr_block = "10.99.124.0/24"
   availability_zone = "ap-southeast-2b"
+
+  tags = {
+     Name = "Private Subnet 2"
+  }
 }
 
-resource "aws_eip" "subnet2-nat" {
+resource "aws_eip" "subnet2-eip-nat" {
    vpc   = true
 }
 
-resource "aws_nat_gateway" "main" {
-   allocation_id = aws_eip.subnet2-nat.id
+resource "aws_nat_gateway" "s2" {
+   allocation_id = aws_eip.subnet2-eip-nat.id
    subnet_id = aws_subnet.subnet2-private.id
 }
 
 resource "aws_nat_gateway" "subnet2-private" {
-   allocation_id = aws_eip.subnet2-nat.id
+   allocation_id = aws_eip.subnet2-eip-nat.id
    subnet_id     = aws_subnet.subnet2-private.id
 }
 
@@ -76,7 +89,7 @@ resource "aws_route_table" "subnet2-private" {
 
     route {
         cidr_block = "0.0.0.0/0"
-        instance_id = aws_nat_gateway.subnet2-private.id
+        instance_id = aws_nat_gateway.s2.id
     }
 
     tags = {
@@ -93,7 +106,7 @@ resource "aws_route_table_association" "subnet2-private" {
 
 resource "aws_db_subnet_group" "postgresql" {
   name       = "main"
-  subnet_ids = [aws_subnet.subnet2-private.id, aws_subnet.subnet1-public.id]
+  subnet_ids = [aws_subnet.subnet2-private.id, aws_subnet.subnet1-private.id]
 
   tags = {
     Name = "Postgres subnet group"
@@ -113,20 +126,18 @@ resource "aws_db_instance" "postgresql" {
     username             = "silly-admin" # ahhh... the good ole days
     password             = "silly-admin"
     db_subnet_group_name = aws_db_subnet_group.postgresql.name
-    availability_zone    = "ap-southeast-2a"
-    multi_az             = false
     #delete_protection    = true   # TODO... disabled for now
 }
 
 ############################## AWS CONFIG DELETION PROTECTION POLICY VIA AWS CLOUDFORMATION
 
 resource "aws_cloudformation_stack" "policy_stack" {
-    name = "policy_stack"
+    name = "policy-stack"
 
     parameters = {
 
     }
-    
+
     # sourced from https://stelligent.com/2019/10/31/deploy-managed-config-rules-using-cloudformation-and-codepipeline/
     template_body = <<STACK
     {
