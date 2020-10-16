@@ -20,7 +20,7 @@ json: plan
 # opa is currently disabled as the policy code is broken... FIXME!
 deployment: json
 	@echo "Evaluating and applying infrastructure plan..."
-#	opa eval --format pretty --data policy/terraform.rego --input $(JSON_PLAN) "data.terraform.analysis.deny"
+	opa eval --format pretty --data policy/terraform.rego --input $(JSON_PLAN) "data.terraform.analysis.only_approved_subnets"
 	terraform apply -auto-approve $(TFARGS)
 
 clean:

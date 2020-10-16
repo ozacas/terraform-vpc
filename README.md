@@ -46,7 +46,7 @@ Pipeline
  2. terraform init - DONE
  3. generate binary plan (and JSON version) - DONE
  4. per-problem statement:
-      * apply OPA to check plan for appropriate subnet configuration (exactly 2) - BROKEN (4a)
+      * apply OPA to check plan for appropriate subnet configuration (exactly 2) - MAYBE WORKING, more testing needed! (4a)
       * apply AWS Config rule and AWS Cloudformation template to prevent deletion of protected RDS instances - UNDERWAY (4b)
  5. terraform apply - DONE
  6. verify that an attempt to create a subnet fails via terraform fails due to step (4a) - UNDERWAY
