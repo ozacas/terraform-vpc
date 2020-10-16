@@ -32,6 +32,14 @@ resource "aws_subnet" "subnet1-private" {
   }
 }
 
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "igw"
+  }
+}
+
 resource "aws_eip" "subnet1-eip-nat" {
    vpc   = true
 }
@@ -123,7 +131,7 @@ resource "aws_db_instance" "postgresql" {
     storage_type         = "gp2"
     engine               = "postgres"
     name                 = "mydb"
-    username             = "silly-admin" # ahhh... the good ole days
+    username             = "sillyadmin" # ahhh... the good ole days
     password             = "silly-admin"
     db_subnet_group_name = aws_db_subnet_group.postgresql.name
     #delete_protection    = true   # TODO... disabled for now
